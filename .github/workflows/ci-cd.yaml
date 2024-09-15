@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install dependebcies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install flask pytest
@@ -93,15 +93,15 @@ jobs:
           image: ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
           output: sbom.json
 
-       - name: Docker Scout
+      - name: Docker Scout
         id: docker-scout
         if: ${{ github.event_name == 'pull_request' }}
         uses: docker/scout-action@v1
         with:
           command: cves,recommendations,compare
           image: ${{ steps.meta.outputs.tags }}
-          to: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.COMPARE_TAG }}
+          to: ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
           ignore-unchanged: true
           only-severities: critical,high
           write-comment: true
-          github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
+          github-token: ${{ secrets.GITHUB_TOKEN }}
